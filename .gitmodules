@@ -1,0 +1,6 @@
+[submodule "qmk_base_container"]
+	path = qmk_base_container
+	url = https://github.com/qmk/qmk_base_container
+[submodule "qmk_cli"]
+	path = qmk_cli
+	url = https://github.com/qmk/qmk_cli
