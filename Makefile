@@ -1,5 +1,14 @@
-ALL:
+.PHONY: build sync clean
+
+default: build sync
+
+build:
+	sh -e -x build-docker.sh
+
+sync:
 	git submodule sync --recursive
 	git submodule update --init --recursive
-	sh build-docker.sh
 
+clean:
+	git submodule foreach --recursive git reset --hard
+	sudo git submodule foreach --recursive git clean -fdx

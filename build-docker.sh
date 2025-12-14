@@ -1,19 +1,21 @@
-tag=1.1.8
+: ${IMAGE_PREFIX:=}
+: ${TAG:=local}
+: ${DOCKER_BUILD:=docker build}
+echo "Building with IMAGE_PREFIX='${IMAGE_PREFIX}' and TAG='${TAG}'"
+
 cd qmk_base_container
-docker build -t qmk_base_container:$tag .
+${DOCKER_BUILD} -t ${IMAGE_PREFIX}qmk_base_container:$TAG .
+
 cd ../qmk_cli
-docker run --rm -it \
+docker run --rm \
     -v "$PWD:/work" \
     -w /work \
-    qmk_base_container:$tag \
+    ${IMAGE_PREFIX}qmk_base_container:$TAG \
     bash -c "
         pip install --upgrade pip &&
         pip install setuptools wheel build &&
         pip install -r requirements-dev.txt &&
         python3 -m build
     "
-sed -i "s|ghcr.io/qmk/qmk_base_container:latest|qmk_base_container:$tag|" Dockerfile
-docker build -t qmk_cli:$tag .
-docker build -t qmk_cli:latest .
-docker build -t qmk_cli:local .
-git reset --hard
+sed -i "s|ghcr.io/qmk/qmk_base_container:latest|${IMAGE_PREFIX}qmk_base_container:$TAG|" Dockerfile
+${DOCKER_BUILD} -t ${IMAGE_PREFIX}qmk_cli:$TAG -t ${IMAGE_PREFIX}qmk_cli:latest .
